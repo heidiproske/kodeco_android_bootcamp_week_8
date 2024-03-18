@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Country Info</string>
+    <string name="x_axis_slider_title">X Axis: %d%%</string>
+    <string name="y_axis_slider_title">Y Axis: %d%%</string>
+</resources>
