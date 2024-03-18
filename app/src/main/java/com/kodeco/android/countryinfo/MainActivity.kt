@@ -3,11 +3,14 @@ package com.kodeco.android.countryinfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kodeco.android.countryinfo.network.CountryService
-import com.kodeco.android.countryinfo.ui.components.CountryInfoScreen
+import com.kodeco.android.countryinfo.ui.screens.countryinfo.CountryInfoScreen
+import com.kodeco.android.countryinfo.ui.screens.countryinfo.CountryInfoViewModelFactory
 import com.kodeco.android.countryinfo.ui.theme.MyApplicationTheme
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import repositories.CountryRepositoryImpl
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
@@ -28,7 +31,13 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyApplicationTheme {
-                CountryInfoScreen(service)
+                CountryInfoScreen(
+                    viewModel = viewModel(
+                        factory = CountryInfoViewModelFactory(
+                            repository = CountryRepositoryImpl(service)
+                        )
+                    )
+                )
             }
         }
     }
