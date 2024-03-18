@@ -1,7 +1,9 @@
 package com.kodeco.android.countryinfo.ui.screens.countryinfo
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +26,16 @@ class CountryInfoViewModel(
 
     fun refresh() {
         _uiState.value = CountryInfoState.Loading
-        fetchCountries()
+        fetchCountriesWithDelay()
+    }
+
+    // TODO: Temporary code to allow us to see "updating" state in a mocked world.
+    //  Remove before rolling out to production!
+    private fun fetchCountriesWithDelay() {
+        viewModelScope.launch {
+            delay(500)
+            fetchCountries()
+        }
     }
 
     private fun fetchCountries() {

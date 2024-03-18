@@ -3,7 +3,6 @@ package com.kodeco.android.countryinfo.ui.screens.countryinfo
 import android.os.Parcelable
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -11,7 +10,6 @@ import com.kodeco.android.countryinfo.models.Country
 import com.kodeco.android.countryinfo.sample.MockCountryRepository
 import com.kodeco.android.countryinfo.ui.components.CountryInfoList
 import com.kodeco.android.countryinfo.ui.components.Loading
-import kotlinx.coroutines.delay
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -26,11 +24,6 @@ fun CountryInfoScreen(
     viewModel: CountryInfoViewModel,
 ) {
     val state: CountryInfoState by viewModel.uiState.collectAsState()
-
-    // Added for displaying the uptime longer on the loading screen.
-    LaunchedEffect(key1 = "loading-delay") {
-        delay(1000)
-    }
 
     Surface {
         when(val curState = state) {
