@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.kodeco.android.countryinfo.flow.Flows
 import com.kodeco.android.countryinfo.models.Country
 import com.kodeco.android.countryinfo.sample.sampleCountries
+import com.kodeco.android.countryinfo.ui.screens.countrydetails.CountryDetailsScreen
 
 @Composable
 fun CountryInfoList(

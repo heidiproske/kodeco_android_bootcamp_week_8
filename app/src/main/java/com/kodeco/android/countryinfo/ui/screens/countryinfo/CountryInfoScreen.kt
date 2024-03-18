@@ -1,4 +1,4 @@
-package com.kodeco.android.countryinfo.ui.components
+package com.kodeco.android.countryinfo.ui.screens.countryinfo
 
 import android.os.Parcelable
 import androidx.compose.material3.Surface
@@ -12,6 +12,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kodeco.android.countryinfo.models.Country
 import com.kodeco.android.countryinfo.network.CountryService
 import com.kodeco.android.countryinfo.sample.sampleCountries
+import com.kodeco.android.countryinfo.ui.components.CountryInfoList
+import com.kodeco.android.countryinfo.ui.components.Error
+import com.kodeco.android.countryinfo.ui.components.Loading
 import kotlinx.parcelize.Parcelize
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow

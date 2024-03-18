@@ -1,4 +1,4 @@
-package com.kodeco.android.countryinfo.ui.components
+package com.kodeco.android.countryinfo.ui.screens.countrydetails
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
