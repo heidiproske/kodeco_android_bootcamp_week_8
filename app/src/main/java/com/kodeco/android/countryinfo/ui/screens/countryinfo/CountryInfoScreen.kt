@@ -26,7 +26,7 @@ fun CountryInfoScreen(
     val state: CountryInfoState by viewModel.uiState.collectAsState()
 
     Surface {
-        when(val curState = state) {
+        when (val curState = state) {
             is CountryInfoState.Loading -> Loading()
 
             is CountryInfoState.Success -> CountryInfoList(curState.countries) {

@@ -13,7 +13,7 @@ import repositories.CountryRepository
 
 class CountryInfoViewModel(
     private val repository: CountryRepository
-): ViewModel() {
+) : ViewModel() {
     // Private mutable state flow for internal use
     private val _uiState = MutableStateFlow<CountryInfoState>(CountryInfoState.Loading)
 
