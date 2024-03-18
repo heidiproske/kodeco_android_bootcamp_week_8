@@ -2,4 +2,7 @@
     <string name="app_name">Country Info</string>
     <string name="x_axis_slider_title">X Axis: %d%%</string>
     <string name="y_axis_slider_title">Y Axis: %d%%</string>
+    <string name="button_title_retry">Retry</string>
+    <string name="dialog_title_error">Error</string>
+    <string name="error_message_failed_to_fetch_countries">Couldn\'t fetch countries: %1$s</string>
 </resources>
