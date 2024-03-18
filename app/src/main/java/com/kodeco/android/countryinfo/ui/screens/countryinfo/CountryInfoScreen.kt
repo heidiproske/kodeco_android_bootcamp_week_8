@@ -32,12 +32,19 @@ fun CountryInfoScreen(
 ) {
     var state: CountryInfoState by rememberSaveable { mutableStateOf(CountryInfoState.Loading) }
 
+    // Added for displaying the uptime longer on the loading screen.
+    LaunchedEffect(key1 = "loading-delay") {
+        delay(1000)
+    }
+
     Surface {
         when(val curState = state) {
             is CountryInfoState.Loading -> Loading()
+
             is CountryInfoState.Success -> CountryInfoList(curState.countries) {
                 state = CountryInfoState.Loading
             }
+            
             is CountryInfoState.Error -> Error(curState.error) {
                 state = CountryInfoState.Loading
             }
@@ -48,8 +55,6 @@ fun CountryInfoScreen(
     if (state == CountryInfoState.Loading) {
         LaunchedEffect(key1 = "fetch-countries") {
             // TODO: The viewmodel should be responsible for converting the response from the repo to a CountryInfoState object.
-            delay(1_000) // Added for displaying the uptime longer on the loading screen.
-
             repository.fetchCountries()
                 .catch { e ->
                     state = CountryInfoState.Error(e)
