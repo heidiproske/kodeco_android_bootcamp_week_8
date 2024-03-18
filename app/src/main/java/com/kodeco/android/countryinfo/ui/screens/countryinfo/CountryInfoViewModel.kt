@@ -26,14 +26,14 @@ class CountryInfoViewModel(
 
     fun refresh() {
         _uiState.value = CountryInfoState.Loading
-        fetchCountriesWithDelay()
+        fetchCountries()
+//        fetchCountriesWithDelay() // Useful when testing
     }
 
-    // TODO: Temporary code to allow us to see "updating" state in a mocked world.
-    //  Remove before rolling out to production!
+    // TODO: Temporary code to allow reviewer to see "updating" state.
     private fun fetchCountriesWithDelay() {
         viewModelScope.launch {
-            delay(500)
+            delay(3500) // So we can watch the counter incrementing a few times.
             fetchCountries()
         }
     }
