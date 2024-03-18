@@ -4,20 +4,15 @@ import android.os.Parcelable
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.kodeco.android.countryinfo.models.Country
 import com.kodeco.android.countryinfo.sample.MockCountryRepository
 import com.kodeco.android.countryinfo.ui.components.CountryInfoList
-import com.kodeco.android.countryinfo.ui.components.Error
 import com.kodeco.android.countryinfo.ui.components.Loading
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.catch
 import kotlinx.parcelize.Parcelize
-import repositories.CountryRepository
 
 @Parcelize
 sealed class CountryInfoState : Parcelable {
@@ -28,9 +23,9 @@ sealed class CountryInfoState : Parcelable {
 
 @Composable
 fun CountryInfoScreen(
-    repository: CountryRepository,
+    viewModel: CountryInfoViewModel,
 ) {
-    var state: CountryInfoState by rememberSaveable { mutableStateOf(CountryInfoState.Loading) }
+    val state: CountryInfoState by viewModel.uiState.collectAsState()
 
     // Added for displaying the uptime longer on the loading screen.
     LaunchedEffect(key1 = "loading-delay") {
@@ -42,26 +37,10 @@ fun CountryInfoScreen(
             is CountryInfoState.Loading -> Loading()
 
             is CountryInfoState.Success -> CountryInfoList(curState.countries) {
-                state = CountryInfoState.Loading
+                viewModel.refresh()
             }
-            
-            is CountryInfoState.Error -> Error(curState.error) {
-                state = CountryInfoState.Loading
-            }
-        }
-    }
 
-    // TODO: Move this logic in to the viewmodel.
-    if (state == CountryInfoState.Loading) {
-        LaunchedEffect(key1 = "fetch-countries") {
-            // TODO: The viewmodel should be responsible for converting the response from the repo to a CountryInfoState object.
-            repository.fetchCountries()
-                .catch { e ->
-                    state = CountryInfoState.Error(e)
-                }
-                .collect { countries ->
-                    state = CountryInfoState.Success(countries)
-                }
+            is CountryInfoState.Error -> Error(curState.error)
         }
     }
 }
@@ -69,5 +48,5 @@ fun CountryInfoScreen(
 @Preview
 @Composable
 fun CountryInfoScreenPreview() {
-    CountryInfoScreen(repository = MockCountryRepository())
+    CountryInfoScreen(viewModel = CountryInfoViewModel(MockCountryRepository()))
 }
