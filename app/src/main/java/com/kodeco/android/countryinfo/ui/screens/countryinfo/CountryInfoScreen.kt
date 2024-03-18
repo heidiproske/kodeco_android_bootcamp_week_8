@@ -27,10 +27,11 @@ fun CountryInfoScreen(
     viewModel: CountryInfoViewModel,
 ) {
     val state: CountryInfoState by viewModel.uiState.collectAsState()
+    val counter by viewModel.counterFlow.collectAsState()
 
     Surface {
         when (val curState = state) {
-            is CountryInfoState.Loading -> Loading()
+            is CountryInfoState.Loading -> Loading(counter)
 
             is CountryInfoState.Success -> CountryInfoList(curState.countries) {
                 viewModel.refresh()

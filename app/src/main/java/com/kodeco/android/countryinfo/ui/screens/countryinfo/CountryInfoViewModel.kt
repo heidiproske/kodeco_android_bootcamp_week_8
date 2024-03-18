@@ -1,6 +1,5 @@
 package com.kodeco.android.countryinfo.ui.screens.countryinfo
 
-import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
@@ -14,13 +13,14 @@ import repositories.CountryRepository
 class CountryInfoViewModel(
     private val repository: CountryRepository
 ) : ViewModel() {
-    // Private mutable state flow for internal use
     private val _uiState = MutableStateFlow<CountryInfoState>(CountryInfoState.Loading)
-
-    // Publicly exposed immutable state flow
     val uiState: StateFlow<CountryInfoState> = _uiState.asStateFlow()
 
+    private val _counterFlow = MutableStateFlow<Int>(0)
+    val counterFlow: StateFlow<Int> = _counterFlow
+
     init {
+        startCounterUpdate()
         fetchCountries()
     }
 
@@ -47,6 +47,14 @@ class CountryInfoViewModel(
                 .collect { countries ->
                     _uiState.value = CountryInfoState.Success(countries)
                 }
+        }
+    }
+    private fun startCounterUpdate() {
+        viewModelScope.launch {
+            while (true) {
+                delay(1_000L)
+                _counterFlow.value += 1
+            }
         }
     }
 }
