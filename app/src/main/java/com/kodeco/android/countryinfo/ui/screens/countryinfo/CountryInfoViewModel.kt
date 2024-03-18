@@ -13,11 +13,10 @@ import repositories.CountryRepository
 class CountryInfoViewModel(
     private val repository: CountryRepository
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<CountryInfoState>(CountryInfoState.Loading)
+    private val _uiState = MutableStateFlow<CountryInfoState>(CountryInfoState.Loading(0))
     val uiState: StateFlow<CountryInfoState> = _uiState.asStateFlow()
 
-    private val _counterFlow = MutableStateFlow<Int>(0)
-    val counterFlow: StateFlow<Int> = _counterFlow
+    private val _appUptimeCounterFlow = MutableStateFlow<Int>(0)
 
     init {
         startCounterUpdate()
@@ -25,7 +24,7 @@ class CountryInfoViewModel(
     }
 
     fun refresh() {
-        _uiState.value = CountryInfoState.Loading
+        _uiState.value = CountryInfoState.Loading(_appUptimeCounterFlow.value)
         fetchCountries()
 //        fetchCountriesWithDelay() // Useful when testing
     }
@@ -49,11 +48,15 @@ class CountryInfoViewModel(
                 }
         }
     }
+
     private fun startCounterUpdate() {
         viewModelScope.launch {
             while (true) {
                 delay(1_000L)
-                _counterFlow.value += 1
+                _appUptimeCounterFlow.value += 1
+                if (_uiState.value is CountryInfoState.Loading) {
+                    _uiState.value = CountryInfoState.Loading(_appUptimeCounterFlow.value)
+                }
             }
         }
     }

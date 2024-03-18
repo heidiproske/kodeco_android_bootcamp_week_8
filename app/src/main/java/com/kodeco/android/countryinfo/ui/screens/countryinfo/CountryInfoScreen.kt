@@ -17,7 +17,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 sealed class CountryInfoState : Parcelable {
-    data object Loading : CountryInfoState()
+    data class Loading(val appUptimeCounter: Int) : CountryInfoState()
     data class Success(val countries: List<Country>) : CountryInfoState()
     data class Error(val error: Throwable) : CountryInfoState()
 }
@@ -27,11 +27,10 @@ fun CountryInfoScreen(
     viewModel: CountryInfoViewModel,
 ) {
     val state: CountryInfoState by viewModel.uiState.collectAsState()
-    val counter by viewModel.counterFlow.collectAsState()
 
     Surface {
         when (val curState = state) {
-            is CountryInfoState.Loading -> Loading(counter)
+            is CountryInfoState.Loading -> Loading(curState.appUptimeCounter)
 
             is CountryInfoState.Success -> CountryInfoList(curState.countries) {
                 viewModel.refresh()
