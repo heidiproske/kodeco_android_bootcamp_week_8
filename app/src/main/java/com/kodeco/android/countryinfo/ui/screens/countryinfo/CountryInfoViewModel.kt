@@ -26,7 +26,7 @@ class CountryInfoViewModel(
     fun refresh() {
         _uiState.value = CountryInfoState.Loading(_appUptimeCounterFlow.value)
         fetchCountries()
-//        fetchCountriesWithDelay() // Useful when testing
+//        fetchCountriesWithDelay() // To reviewer: Use this instead of above to see uptime counter :)
     }
 
     // TODO: Temporary code to allow reviewer to see "updating" state.
