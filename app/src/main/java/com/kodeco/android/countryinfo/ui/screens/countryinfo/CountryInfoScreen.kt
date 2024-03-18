@@ -10,17 +10,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.kodeco.android.countryinfo.models.Country
-import com.kodeco.android.countryinfo.network.CountryService
-import com.kodeco.android.countryinfo.sample.sampleCountries
+import com.kodeco.android.countryinfo.sample.MockCountryRepository
 import com.kodeco.android.countryinfo.ui.components.CountryInfoList
 import com.kodeco.android.countryinfo.ui.components.Error
 import com.kodeco.android.countryinfo.ui.components.Loading
-import kotlinx.parcelize.Parcelize
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import retrofit2.Response
+import kotlinx.parcelize.Parcelize
+import repositories.CountryRepository
 
 @Parcelize
 sealed class CountryInfoState : Parcelable {
@@ -31,7 +28,7 @@ sealed class CountryInfoState : Parcelable {
 
 @Composable
 fun CountryInfoScreen(
-    service: CountryService,
+    repository: CountryRepository,
 ) {
     var state: CountryInfoState by rememberSaveable { mutableStateOf(CountryInfoState.Loading) }
 
@@ -50,40 +47,22 @@ fun CountryInfoScreen(
     // TODO: Move this logic in to the viewmodel.
     if (state == CountryInfoState.Loading) {
         LaunchedEffect(key1 = "fetch-countries") {
-            getCountryInfoFlow(service)
-                .catch {
-                    state = CountryInfoState.Error(it)
+            // TODO: The viewmodel should be responsible for converting the response from the repo to a CountryInfoState object.
+            delay(1_000) // Added for displaying the uptime longer on the loading screen.
+
+            repository.fetchCountries()
+                .catch { e ->
+                    state = CountryInfoState.Error(e)
                 }
-                .collect { countryInfoState ->
-                    state = countryInfoState
+                .collect { countries ->
+                    state = CountryInfoState.Success(countries)
                 }
         }
     }
 }
 
-// TODO: Remove this method and split it out into a viewmodel and repository.
-//  The repo should be responsible for fetching the list of Country objects from the API service.
-//  The viewmodel should be responsible for converting the response from the repo to a CountryInfoState object.
-private fun getCountryInfoFlow(service: CountryService): Flow<CountryInfoState> = flow {
-    delay(1_000) // Added for displaying the uptime longer on the loading screen.
-    val countriesResponse = service.getAllCountries()
-
-    val newState = if (countriesResponse.isSuccessful) {
-        CountryInfoState.Success(countriesResponse.body()!!)
-    } else {
-        CountryInfoState.Error(Throwable("Request failed: ${countriesResponse.message()}"))
-    }
-
-    emit(newState)
-}
-
 @Preview
 @Composable
 fun CountryInfoScreenPreview() {
-    CountryInfoScreen(
-        service = object : CountryService {
-            override suspend fun getAllCountries(): Response<List<Country>> =
-                Response.success(sampleCountries)
-        },
-    )
+    CountryInfoScreen(repository = MockCountryRepository())
 }
