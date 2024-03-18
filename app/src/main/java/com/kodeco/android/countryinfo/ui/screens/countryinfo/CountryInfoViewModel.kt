@@ -16,7 +16,7 @@ class CountryInfoViewModel(
     private val _uiState = MutableStateFlow<CountryInfoState>(CountryInfoState.Loading(0))
     val uiState: StateFlow<CountryInfoState> = _uiState.asStateFlow()
 
-    private val _appUptimeCounterFlow = MutableStateFlow<Int>(0)
+    private val _appUptimeCounterFlow = MutableStateFlow(0)
 
     init {
         startCounterUpdate()
