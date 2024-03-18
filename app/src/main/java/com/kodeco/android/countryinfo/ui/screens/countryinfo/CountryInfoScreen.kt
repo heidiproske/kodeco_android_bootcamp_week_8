@@ -9,6 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kodeco.android.countryinfo.models.Country
 import com.kodeco.android.countryinfo.sample.MockCountryRepository
 import com.kodeco.android.countryinfo.ui.components.CountryInfoList
+import com.kodeco.android.countryinfo.ui.components.ErrorRetryAlertDialog
 import com.kodeco.android.countryinfo.ui.components.Loading
 import kotlinx.parcelize.Parcelize
 
@@ -33,7 +34,12 @@ fun CountryInfoScreen(
                 viewModel.refresh()
             }
 
-            is CountryInfoState.Error -> Error(curState.error)
+            is CountryInfoState.Error -> {
+                ErrorRetryAlertDialog(
+                    message = "An error occurred: ${curState.error.message}",
+                    onRetry = { viewModel.refresh() }
+                )
+            }
         }
     }
 }
